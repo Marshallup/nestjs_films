@@ -8,6 +8,16 @@ import { Profession, ProfessionDocument } from "./professions.schema";
 export class ProfessionsService {
     constructor(@InjectModel(Profession.name) private ProfessionModel: Model<ProfessionDocument>) {}
 
+    async getProfessionByName(name: string) {
+        try {
+            const profession = await this.ProfessionModel.findOne({ name });
+
+            return profession;
+        } catch(error) {
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     async createProfessions(dto: CreateProfessionsDto) {
         try {
             const professions = this.ProfessionModel.create(dto);

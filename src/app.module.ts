@@ -9,11 +9,22 @@ import { SharedModule } from './shared/shared.module';
 import { FilmsModule } from './films/films.module';
 import { PeoplesModule } from './peoples/peoples.module';
 import { ProfessionsModule } from './professions/professions.module';
+import { FilesModule } from './files/files.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 const ENV_TYPE = process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : '';
 
 @Module({
     imports: [
+        ServeStaticModule.forRoot({
+            rootPath: join(__dirname, '..', 'public'),
+            serveStaticOptions: {
+                redirect: false,
+                index: false,
+            },
+            serveRoot: '/public/'
+        }),
         ConfigModule.forRoot({
             envFilePath: `${ENV_TYPE}.env`,
         }),
@@ -26,6 +37,7 @@ const ENV_TYPE = process.env.NODE_ENV ? `.${process.env.NODE_ENV}` : '';
         FilmsModule,
         PeoplesModule,
         ProfessionsModule,
+        FilesModule,
     ],
     controllers: [],
     providers: [],

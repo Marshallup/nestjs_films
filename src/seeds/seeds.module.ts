@@ -9,6 +9,10 @@ import { UsersSeed } from 'src/users/seeds/users.seed';
 import { ProfessionsSeed } from 'src/professions/seeds/professions.seed';
 import { GeneralSeed } from './seeds.service';
 import { ProfessionsModule } from 'src/professions/professions.module';
+import { PeoplesModule } from 'src/peoples/peoples.module';
+import { PeoplesSeed } from 'src/peoples/seeds/peoples.seed';
+import { FilmsModule } from 'src/films/films.module';
+import { FilmsSeed } from 'src/films/seeds/films.seed';
 
 @Module({
     imports: [
@@ -17,6 +21,8 @@ import { ProfessionsModule } from 'src/professions/professions.module';
         RolesModule,
         UsersModule,
         ProfessionsModule,
+        PeoplesModule,
+        FilmsModule,
     ],
     providers: [
         GenresSeed,
@@ -24,6 +30,8 @@ import { ProfessionsModule } from 'src/professions/professions.module';
         GeneralSeed,
         UsersSeed,
         ProfessionsSeed,
+        PeoplesSeed,
+        FilmsSeed,
     ],
     exports: [
         GenresSeed,
@@ -31,6 +39,8 @@ import { ProfessionsModule } from 'src/professions/professions.module';
         GeneralSeed,
         UsersSeed,
         ProfessionsSeed,
+        PeoplesSeed,
+        FilmsSeed,
     ],
 })
 export class SeedsModule {}

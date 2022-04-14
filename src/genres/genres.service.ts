@@ -8,6 +8,16 @@ import { addGenreDto, addGenresDto } from './dto/create-genre.dto';
 export class GenresService {
     constructor(@InjectModel(Genre.name) private GenreModel: Model<GenreDocument>) {}
 
+    async getGenreByName(name: string) {
+        try {
+            const genre = await this.GenreModel.findOne({ name });
+
+            return genre;
+        } catch(error) {
+            throw new HttpException(`Жанр "${name}" - ошибка при поиске`, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     async createGenre(dto: addGenreDto) {
         const candidate = await this.GenreModel.findOne({ name: dto.name });
 

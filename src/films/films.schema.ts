@@ -5,7 +5,7 @@ import { Document } from 'mongoose';
 import { Genre } from 'src/genres/genres.schema';
 import { People } from 'src/peoples/peoples.schema';
 
-export type PeopleDocument = Film & Document;
+export type FilmDocument = Film & Document;
 
 @Schema()
 export class Film {
@@ -33,10 +33,16 @@ export class Film {
   @Prop()
   length: number;
 
-  @Prop({ type: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Genre' } ] })
+  @Prop({ default: false })
+  isSerial: boolean;
+
+  @Prop()
+  ratingAgeLimits: string;
+
+  @Prop({ type: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Genre' } ], default: [] })
   genres: Genre[];
 
-  @Prop({ type: [ { type: mongoose.Schema.Types.ObjectId, ref: 'People' } ] })
+  @Prop({ type: [ { type: mongoose.Schema.Types.ObjectId, ref: 'People' } ], default: [] })
   peoples: People[];
 }
 
