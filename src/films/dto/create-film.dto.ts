@@ -11,5 +11,7 @@ export class CreateFilmDto {
     readonly length: number;
     readonly genres: Schema.Types.ObjectId[];
     readonly peoples: Schema.Types.ObjectId[];
+    readonly ratingAgeLimits: string;
+    readonly mainImage?: Express.Multer.File;
 }
 export type CreateFilmsDto = CreateFilmDto[];

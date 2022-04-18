@@ -1,25 +1,18 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from 'mongoose';
-import { AddMainPhotoDto } from "./dto/add-main-photo-film.dto";
+import { AddMainImageDto } from "./dto/add-main-image-film.dto";
 import { CreateFilmsDto } from "./dto/create-film.dto";
 import { Film, FilmDocument } from "./films.schema";
+import { createDir, cutAndPast, removeFile } from "src/utils/helpers";
+import { IMAGES_FILMS_DIR } from "src/utils/constants";
 import { join } from "path";
-import { unlinkSync, readFileSync } from "fs";
+import { AddlImageDto } from "./dto/add-image-film.dto";
+import { HttpSuccess } from "src/utils/responseServer";
 
 @Injectable()
 export class FilmsService {
     constructor(@InjectModel(Film.name) private FilmModel: Model<FilmDocument>) {}
-
-    // async getProfessionByName(name: string) {
-    //     try {
-    //         const profession = await this.ProfessionModel.find({ name });
-
-    //         return profession;
-    //     } catch(error) {
-    //         throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    //     }
-    // }
 
     async createFims(dto: CreateFilmsDto) {
         try {
@@ -31,18 +24,62 @@ export class FilmsService {
         }
     }
 
-    async addMainPhoto(dto: AddMainPhotoDto) {
+    async addAdditionalImage(dto: AddlImageDto) {
+
         try {
-            const film = await this.FilmModel.findById(dto.id);
+            const film = await this.FilmModel.findByIdAndUpdate(dto.id, { $push: { images: dto.imageName } });
 
             if (!film) {
-                throw Error
+                throw new Error('Фильма не найдено!');
             }
         } catch(error) {
-            unlinkSync(join(process.cwd(), '/', dto.image.path));
-
-            throw new HttpException('Фильм не найден', HttpStatus.BAD_REQUEST);
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
         }
-        return dto;
+        
+    }
+
+    async setMainImage(dto: AddlImageDto) {
+        try {
+            const { id } = dto;
+            const film = await this.FilmModel.findById(id);
+
+            if (!film) {
+                throw new Error('Фильма не найдено!');
+            }
+
+            if (film.mainImage) {
+                await this.addAdditionalImage({ id, imageName: film.mainImage });
+            }
+
+            film.mainImage = dto.imageName;
+
+            await film.save();
+
+        } catch(error) {
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    async uploadMainImage(dto: AddMainImageDto) {
+        const { id } = dto;
+        const { filename: imageName, path: imageOrigPath } = dto.image;
+        const imagePath = join(process.cwd(), imageOrigPath);
+
+        try {
+            await this.setMainImage({ id: dto.id, imageName});
+
+            const filmDir = join(process.cwd(), `${IMAGES_FILMS_DIR}/${id}`);
+
+            createDir(filmDir);
+
+            cutAndPast(imagePath, join(filmDir, imageName));
+
+            return new HttpSuccess(`Фото "${imageName}" успешно добавлено для фильма "${id}"`);
+
+        } catch(error) {
+            removeFile(imagePath);
+
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+        }
     }
 }

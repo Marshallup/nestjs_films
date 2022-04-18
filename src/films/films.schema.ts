@@ -38,6 +38,12 @@ export class Film {
 
   @Prop()
   ratingAgeLimits: string;
+  
+  @Prop({ default: null })
+  mainImage: string;
+
+  @Prop({ default: [] })
+  images: string[];
 
   @Prop({ type: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Genre' } ], default: [] })
   genres: Genre[];

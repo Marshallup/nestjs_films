@@ -3,7 +3,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from 'multer';
 import { parse } from "path";
 import { ErrorFilter } from "src/exceptions/filter.exception";
-import { FOLDERS } from "src/utils/constants";
+import { IMAGES_DIR } from "src/utils/constants";
 
 @Controller('files')
 export class FilesController {
@@ -18,7 +18,7 @@ export class FilesController {
                 return cb(null, true);
             },
             storage: diskStorage({
-                destination: `.${FOLDERS.IMAGES_DIR}`,
+                destination: `.${IMAGES_DIR}`,
                 filename: (req, file, cb) => {
                     const fileName = parse(file.originalname).name.replace(/\s/g, '') + Date.now();
                     const extension = parse(file.originalname).ext;

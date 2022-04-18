@@ -16,6 +16,9 @@ export class People {
   @Prop()
   dateOfBirth: Date;
 
+  @Prop()
+  mainPhoto: string;
+
   @Prop({ type: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Genre' } ] })
   genres: Genre[];
 
@@ -24,9 +27,6 @@ export class People {
 
   @Prop({ type: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Film' } ] })
   films: Film[];
-
-//   @Prop({ type: [ { type: mongoose.Schema.Types.ObjectId, ref: 'Film' } ] })
-//   films: Film[];
 }
 
 export const PeopleSchema = SchemaFactory.createForClass(People);
